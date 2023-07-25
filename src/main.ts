@@ -14,7 +14,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));//view engine
   app.setViewEngine('ejs');
   app.useGlobalPipes(new ValidationPipe()); //sử dụng pipe để validation dữ liệu
-  const port = configService.get('PORT');
+  const port = configService.get('PORT') ;
   await app.listen(port, ()=> {
     console.log(`this server listening on port ${port} ...`)
   });
