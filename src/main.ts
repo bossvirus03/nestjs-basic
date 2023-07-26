@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 require('dotenv').config();
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -8,8 +8,9 @@ import {ValidationPipe} from '@nestjs/common';
 import { TransformInterceptor } from './core/transform.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const reflector = app.get(Reflector);
   const configService = app.get(ConfigService);
-  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalInterceptors(new TransformInterceptor(reflector));
   app.useStaticAssets(join(__dirname, '..', 'public')); //static file
   app.setBaseViewsDir(join(__dirname, '..', 'views'));//view engine
   app.setViewEngine('ejs');
