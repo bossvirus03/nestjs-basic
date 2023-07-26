@@ -17,7 +17,7 @@ export class CreateCompanyDto {
     name: string;
 
     createdBy:{
-        _id: string;
+        _id: mongoose.Schema.Types.ObjectId;;
         _email: string;
     }
     
