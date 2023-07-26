@@ -4,17 +4,34 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
-import {ValidationPipe} from '@nestjs/common';
+import {ValidationPipe, VersioningType} from '@nestjs/common';
 import { TransformInterceptor } from './core/transform.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const reflector = app.get(Reflector);
   const configService = app.get(ConfigService);
+
+  //truyền reflector vào customize message
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
-  app.useStaticAssets(join(__dirname, '..', 'public')); //static file
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));//view engine
+
+  //static file
+  app.useStaticAssets(join(__dirname, '..', 'public')); 
+
+  //view engine
+  app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
-  app.useGlobalPipes(new ValidationPipe()); //sử dụng pipe để validation dữ liệu
+
+  //sử dụng pipe để validation dữ liệu
+  app.useGlobalPipes(new ValidationPipe()); 
+
+  //config versioning
+  app.setGlobalPrefix('api')
+  app.enableVersioning({
+    type: VersioningType.URI,
+    //prefix: 'api/v',
+    defaultVersion: ['1', '2']
+  });
+
   const port = configService.get('PORT') ;
   await app.listen(port, ()=> {
     console.log(`this server listening on port ${port} ...`)
