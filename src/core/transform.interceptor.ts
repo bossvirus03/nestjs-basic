@@ -33,7 +33,6 @@ import { RESPONSE_MESSAGE } from 'src/decorator/customize';
             ) || '',
             data: {
               result: data,
-              meta: {} // if this is supposed to be the actual return then replace {} with data.result
             }
           })),
         );

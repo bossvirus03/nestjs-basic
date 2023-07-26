@@ -13,7 +13,7 @@ export class CompaniesController {
     return this.companiesService.create(createCompanyDto, user);
   }
 
-  @ResponseMessage("success ")
+  @ResponseMessage("success")
   @Get()
   findAll(
     @Query("limit") limit: number,

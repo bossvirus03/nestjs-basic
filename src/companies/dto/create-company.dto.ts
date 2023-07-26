@@ -1,5 +1,6 @@
 //data transfer object
 import { IsNotEmpty } from 'class-validator';//validator email, password, .. from class-validation
+import mongoose from 'mongoose';
 export class CreateCompanyDto {
 
     @IsNotEmpty({
@@ -17,7 +18,7 @@ export class CreateCompanyDto {
     name: string;
 
     createdBy:{
-        _id: mongoose.Schema.Types.ObjectId;;
+        _id: mongoose.Schema.Types.ObjectId;
         _email: string;
     }
     

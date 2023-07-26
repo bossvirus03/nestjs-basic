@@ -10,7 +10,7 @@ class company {
     _id: mongoose.Schema.Types.ObjectId;
 }
 
-export class CreateUserDto {
+export class RegisterUserDto {
 
     @IsEmail({}, { message: "định dạng này không phải email" })
     @IsNotEmpty({
@@ -42,9 +42,11 @@ export class CreateUserDto {
         message: "age không được để trống"
     })
     age: number;
+
+    rule: string;
 }
 
-export class RegisterUserDto {
+export class CreateUserDto {
 
     @IsEmail({}, { message: "định dạng này không phải email" })
     @IsNotEmpty({
@@ -88,5 +90,16 @@ export class RegisterUserDto {
     @ValidateNested()
     @Type(() => Company)
     company: Company;
-
+    createdBy : {
+        _id : mongoose.Schema.Types.ObjectId;
+        email: string;
+    }
+    updatedBy : {
+         _id : mongoose.Schema.Types.ObjectId;
+        email: string;
+    }
+    DeletedBy : {
+         _id : mongoose.Schema.Types.ObjectId;
+        email: string;
+    }
 }

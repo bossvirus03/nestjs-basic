@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from 'src/users/users.interface';
+import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { genSaltSync, hashSync } from 'bcrypt';
 @Injectable()
 export class AuthService {
     constructor(
@@ -37,4 +42,11 @@ export class AuthService {
             role: user.role,
         };
     }
+   async register(registerUserDto: RegisterUserDto) {
+    const newUser = await this.usersService.register(registerUserDto)
+    return {
+        _id: newUser?._id,
+        createdAt: newUser?.createdAt
+    }
+   }
 }
