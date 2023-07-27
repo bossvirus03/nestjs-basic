@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
-import { Public } from '../decorator/customize';
+import { Public, ResponseMessage } from '../decorator/customize';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 
@@ -11,6 +11,7 @@ export class AuthController {
   ) {}
   @UseGuards(LocalAuthGuard)  
   @Public()
+  @ResponseMessage("")
   @Post('login')
   async handleLogin(@Request() req) {
     return this.authService.login(req.user);

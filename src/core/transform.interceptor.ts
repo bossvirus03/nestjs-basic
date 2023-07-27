@@ -31,9 +31,7 @@ import { RESPONSE_MESSAGE } from 'src/decorator/customize';
               RESPONSE_MESSAGE,
               context.getHandler(),
             ) || '',
-            data: {
-              result: data,
-            }
+            data: data,
           })),
         );
     }
