@@ -3,7 +3,7 @@ import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User as UserM, UserDocument } from './schemas/user.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
@@ -115,5 +115,8 @@ export class UsersService {
       }
     })
     return await this.userModel.softDelete({ _id: id })
+  }
+   updateUserToken = async (refreshToken: string, _id: mongoose.Schema.Types.ObjectId) => {
+    return await this.userModel.updateOne({_id}, {refreshToken})
   }
 }

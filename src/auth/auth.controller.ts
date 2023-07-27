@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { Public, ResponseMessage } from '../decorator/customize';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
-
+import { Response } from 'express'
 @Controller('auth')
 export class AuthController {
   constructor( private authService: AuthService //
@@ -13,8 +13,8 @@ export class AuthController {
   @Public()
   @ResponseMessage("")
   @Post('login')
-  async handleLogin(@Request() req) {
-    return this.authService.login(req.user);
+  async handleLogin(@Req() req, @Res({ passthrough: true }) response: Response) {
+    return this.authService.login(req.user,response);
   }
   
   @Public()
@@ -26,7 +26,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   //bảo về người dùng : đăng nhập thì mới có thể truy cập vào route này
   @Get('profile')
-  getProfile(@Request() req) {
+  getProfile(@Req() req) {
     return req.user;//req.user này là req mà jwt trả về 
   }
 }
