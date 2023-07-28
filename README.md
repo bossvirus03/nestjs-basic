@@ -1,8 +1,8 @@
 ### tạo project nest
     $ npm i -g @nestjs/cli
     $ nest new project-name
-### tao cac modules
-    $nest 
+### tạo các modules
+     $nest g <name modules> companies --no-spec
 ### template view engine 
     step 1: intall npm ejs
         npm i ejs
