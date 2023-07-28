@@ -116,7 +116,10 @@ export class UsersService {
     })
     return await this.userModel.softDelete({ _id: id })
   }
-   updateUserToken = async (refreshToken: string, _id: mongoose.Schema.Types.ObjectId) => {
-    return await this.userModel.updateOne({_id}, {refreshToken})
+  updateUserToken = async (refreshToken: string, _id:string) => {
+    return await this.userModel.updateOne({ _id }, { refreshToken })
+  }
+  findUserByToken = async (refreshToken: string) => {
+    return await this.userModel.findOne({ refreshToken })
   }
 }

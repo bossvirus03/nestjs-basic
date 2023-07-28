@@ -12,7 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {//extends kế th
   async validate(username: string, password: string): Promise<any> {//vì ở đây đang dùng passportlocal nên chỉ có 2 tham số truyền vào là username và password
     const user = await this.authService.validateUser(username, password);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("username/password is invalid");
     }
     return user;
   }

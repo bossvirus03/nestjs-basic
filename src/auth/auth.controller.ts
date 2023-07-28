@@ -4,11 +4,15 @@ import { LocalAuthGuard } from './local-auth.guard';
 import { Public, ResponseMessage } from '../decorator/customize';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
-import { Response } from 'express'
+import { Response, Request } from 'express'
+import { IUser } from 'src/users/users.interface';
+import { User } from '../decorator/customize'
 @Controller('auth')
 export class AuthController {
   constructor( private authService: AuthService //
   ) {}
+  @UseGuards(JwtAuthGuard)
+  //bảo về người dùng : đăng nhập thì mới có thể truy cập vào route này
   @UseGuards(LocalAuthGuard)  
   @Public()
   @ResponseMessage("")
@@ -23,10 +27,16 @@ export class AuthController {
     return this.authService.register(registerUserDto);//req.user này là req mà jwt trả về 
   }
   
-  @UseGuards(JwtAuthGuard)
-  //bảo về người dùng : đăng nhập thì mới có thể truy cập vào route này
-  @Get('profile')
-  getProfile(@Req() req) {
-    return req.user;//req.user này là req mà jwt trả về 
+  
+  @Get('account')
+  getProfile(@User() user: IUser) {
+    return {user};//req.user này là req mà jwt trả về 
+  }
+  @Public()
+  @ResponseMessage("refresh token")
+  @Get('refresh')
+  handleRefreshToken(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
+    const refreshToken = request.cookies["refresh_token"];//req.user này là req mà jwt trả về 
+    return this.authService.processNewToken(refreshToken, response);//req.user này là req mà jwt
   }
 }

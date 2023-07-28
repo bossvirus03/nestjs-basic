@@ -22,7 +22,7 @@ import { UsersService } from 'src/users/users.service';
       }),
       inject: [ConfigService],
     }),],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy],// khi các router hoạt động thì module đã gọi đến các hàm của passport để check thông tin đăng nhập của user
   exports: [AuthService],
   controllers: [AuthController]
 })

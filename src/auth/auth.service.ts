@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from 'src/users/users.interface';
@@ -34,14 +34,13 @@ export class AuthService {
             name,
             email,
             role
-
         };
-        const refresh_token = this.getRefreshToken(payload);
+        const refresh_token = this.getRefreshToken(payload);//create refresh token
 
-        //update user with refresh token
-        await this.usersService.updateUserToken(refresh_token, _id)
+        //update refresh token in database
+        await this.usersService.updateUserToken(refresh_token, _id.toString())
 
-        //set refresh token as cookie
+        //set refresh token as cookie(lưu vào cookie)
         response.cookie('refresh_token', refresh_token,
             {
                 httpOnly: true,
@@ -65,12 +64,60 @@ export class AuthService {
             createdAt: newUser?.createdAt
         }
     }
-    getRefreshToken = (payload) => {
+    getRefreshToken = (payload) => {//create refresh token 
         const refresh_token = this.jwtService.sign(payload, {
             secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
             expiresIn: ms(this.configService.get<string>('JWT_REFRESH_EXPIRES')) / 1000,
 
         });
         return refresh_token;
+    }
+
+    processNewToken = async (refreshToken: string, response: Response) => {
+        //mỗi lần refresh trang sẽ cập nhật một refresh token mới và nó sẽ tồn tại trong thời gian set cookie
+        try {
+            //kiểm tra token trong db và cookie
+            this.jwtService.verify(refreshToken, {
+                secret: this.configService.get<string>('JWT_REFRESH_SECRET')
+            });
+            
+            const user = await this.usersService.findUserByToken(refreshToken)//tìm trong database xem có refresh token đã lưu ở phiên login
+            if (user) {//nếu có thì cập nhật lại token
+                const { _id, email, name, role, } = user;
+                const payload = {
+                    sub: "token refresh",
+                    iss: "from server",
+                    _id,
+                    name,
+                    email,
+                    role
+
+                };
+                const refresh_token = this.getRefreshToken(payload);
+
+                //khi đã đăng nhập, lúc gọi đến rout này sẽ cập nhập thêm trường refresh token vào data base
+                await this.usersService.updateUserToken(refresh_token, _id.toString())
+
+                //set refresh token as cookie(đặt refresh token vào cookie)
+                response.clearCookie('refresh_token');//clear cookie cũ
+                response.cookie('refresh_token', refresh_token,
+                    {
+                        httpOnly: true,
+                        maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRES'))//account còn đăng nhập là do cookie 
+                    })
+                return {
+                    access_token: this.jwtService.sign(payload),//tạo ra 1 token mới (tồn tại trong thời gian ngắn)
+                    user: {
+                        _id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                    }
+                };
+            }
+        } catch (error) {
+            throw new BadRequestException("refresh token không hợp lệ hoặc đã hết hạn vui lòng đăng nhập lại")
+            //khi không refresh lại trang trước khi refresh token hết hạn thì refresh token sẽ tự động hết hạn sau thời gian đã set (JWT_REFRESH_EXPIRES)
+        };
     }
 }
