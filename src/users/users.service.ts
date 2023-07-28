@@ -53,8 +53,8 @@ export class UsersService {
 
   async findAll(limit: number, currentPage: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
     console.log(filter)
     const skip = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;//nếu không truyền vào limit thì sẽ để mặc định là 10

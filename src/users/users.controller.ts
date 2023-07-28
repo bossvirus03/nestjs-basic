@@ -22,8 +22,8 @@ export class UsersController {
   @ResponseMessage("fetch all Users")
   @Get()
   findAll(
-    @Query("limit") limit: number,
-    @Query("page") currentPage: number,
+    @Query("pageSize") limit: number,
+    @Query("current") currentPage: number,
     @Query() qs: string
   ) {
     return this.usersService.findAll(limit, currentPage, qs);

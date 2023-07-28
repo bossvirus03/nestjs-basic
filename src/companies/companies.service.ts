@@ -22,8 +22,8 @@ export class CompaniesService {
 
   async findAll(limit: number, currentPage: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
     let offset = (+currentPage - 1) * (+limit);//số bản ghi đã hiển thị ra
     let defaultLimit = +limit ? +limit : 10;//nếu không truyền vào limit thì sẽ để mặc định là 10
     const totalItems = (await this.companyModel.find(filter)).length;//tổng số bản ghi
