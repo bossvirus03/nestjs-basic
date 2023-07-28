@@ -12,7 +12,7 @@
 ### Mô hình mvc 
 
 ### Nguyên lí hoạt động của refresh token
-# (mỗi một thiết bị sẽ chỉ lưu 1 cookie) 
+#### (mỗi một thiết bị sẽ chỉ lưu 1 cookie) 
     * trong mỗi lần login
         + server sẽ tạo ra một refresh token sau đó lưu vào database và cookie(refresh token này có thời gian sống lâu)
         + sau đó sẽ tạo thêm 1 token nữa ghi đè lên token cũ (token này có thời gian sống thấp)
