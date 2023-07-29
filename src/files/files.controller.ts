@@ -11,19 +11,20 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) { }
   @Public()
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  /////*******\\\\\FileInterceptor(fieldName: string, localOptions?: MulterOptions)
+  @UseInterceptors(FileInterceptor('file'))// cùng lúc này sẽ chạy vào option đó ở multer.config.ts để tiến hành lưu trữ file
   uploadFile(@UploadedFile(
     new ParseFilePipeBuilder()
       .addFileTypeValidator({
         fileType: /image\/gif|image\/jpeg|application\/pdf|text\/plain|image\/png/,
       })
       .addMaxSizeValidator({
-        maxSize: 1000*1024//đơn vị byte
+        maxSize: 1000 * 1024//đơn vị byte
       })
       .build({
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
       }),) file: Express.Multer.File) {
-    console.log(file);
+    return file.filename;
   }
   @Get()
   findAll() {

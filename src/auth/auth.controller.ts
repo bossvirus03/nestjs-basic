@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Req, Res, Post} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
-import { Public, ResponseMessage } from '../decorator/customize';
+import {  Public, ResponseMessage } from '../decorator/customize';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Response, Request } from 'express'
@@ -23,7 +23,7 @@ export class AuthController {
   
   @Public()
   @Post('register')
-  registerUser(@Body() registerUserDto: RegisterUserDto) {
+  registerUser(@Body() registerUserDto: RegisterUserDto): Promise<{ _id: import("mongoose").Types.ObjectId; createdAt: string; }> {
     return this.authService.register(registerUserDto);//req.user này là req mà jwt trả về 
   }
   
