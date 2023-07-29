@@ -3,13 +3,13 @@ import { IsNotEmpty } from 'class-validator';//validator email, password, .. fro
 import mongoose from 'mongoose';
 export class CreateCompanyDto {
 
-    @IsNotEmpty({
-        message: "email không được để trống"
-    })
+    // @IsNotEmpty({
+    //     message: "email không được để trống"
+    // })
     email: string;
-    @IsNotEmpty({
-        message: "desciption không được để trống"
-    })
+    // @IsNotEmpty({
+    //     message: "desciption không được để trống"
+    // })
     desciption: string;
 
     @IsNotEmpty({

@@ -39,4 +39,9 @@ export class AuthController {
     const refreshToken = request.cookies["refresh_token"];//req.user này là req mà jwt trả về 
     return this.authService.processNewToken(refreshToken, response);//req.user này là req mà jwt
   }
+  @Post('logout')
+  handleLogout(@User() user: IUser, @Res({ passthrough: true }) response: Response) {
+    response.clearCookie("refresh_token");
+    return this.authService.logout(user, response);//req.user này là req mà jwt
+  }
 }

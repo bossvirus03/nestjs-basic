@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import {APP_GUARD} from '@nestjs/core'
 import { CompaniesModule } from './companies/companies.module';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
+import { JobsModule } from './jobs/jobs.module';
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -29,12 +30,10 @@ import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
     UsersModule,
     AuthModule,
     CompaniesModule,
+    JobsModule,
   ],
 
   controllers: [AppController],
-  providers: [AppService, {
-    provide: APP_GUARD,
-    useClass: JwtAuthGuard,
-  },],
+  providers: [AppService],
 })
 export class AppModule {}

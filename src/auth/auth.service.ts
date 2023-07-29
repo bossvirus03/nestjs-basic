@@ -120,4 +120,8 @@ export class AuthService {
             //khi không refresh lại trang trước khi refresh token hết hạn thì refresh token sẽ tự động hết hạn sau thời gian đã set (JWT_REFRESH_EXPIRES)
         };
     }
+    logout = (user: IUser, response: Response) => {
+        this.usersService.updateUserToken(null, user._id.toString())
+        return "OK"
+    }
 }

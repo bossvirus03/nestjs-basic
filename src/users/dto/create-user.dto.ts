@@ -69,9 +69,9 @@ export class CreateUserDto {
     })
     address: string;
 
-    @IsNotEmpty({
-        message: "rule không được để trống"
-    })
+    // @IsNotEmpty({
+    //     message: "rule không được để trống"
+    // })
     rule: string;
 
     @IsNotEmpty({

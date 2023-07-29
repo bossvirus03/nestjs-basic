@@ -8,7 +8,8 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 @Injectable()
 export class CompaniesService {
-  constructor(@InjectModel(Company.name) private companyModel: SoftDeleteModel<CompanyDocument>) { } //connect to mongoschema
+  constructor(@InjectModel(Company.name) private companyModel: SoftDeleteModel<CompanyDocument>) {} //connect to mongoschema
+  
   async create(createCompanyDto: CreateCompanyDto, user: IUser) {
     const company = await this.companyModel.create({
       ...createCompanyDto,
