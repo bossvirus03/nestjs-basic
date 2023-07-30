@@ -7,6 +7,10 @@ export class CreateCompanyDto {
     //     message: "email không được để trống"
     // })
     email: string;
+    @IsNotEmpty({
+        message: "logo không được để trống",
+    })
+    logo: string;
     // @IsNotEmpty({
     //     message: "desciption không được để trống"
     // })

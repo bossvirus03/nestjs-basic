@@ -56,7 +56,11 @@ export class CreateJobDto {
 
     @IsNotEmpty({
         message: "sActive không được để trống"
-    })
+    }) 
     sActive: boolean;
+
+    // @IsNotEmpty({
+    //     message: "location không được để trống"
+    // })
     isDeleted: boolean;
 }

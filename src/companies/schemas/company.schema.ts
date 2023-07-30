@@ -27,8 +27,12 @@ export class Company {
 
   @Prop()
   deletedAt: string;
+  
   @Prop()
   isDeleted: boolean;
+
+  @Prop()
+  logo: string;
 
   @Prop({ type: Object })
   deletedBy: {

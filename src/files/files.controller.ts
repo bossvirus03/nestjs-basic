@@ -12,7 +12,7 @@ export class FilesController {
   @Public()
   @Post('upload')
   /////*******\\\\\FileInterceptor(fieldName: string, localOptions?: MulterOptions)
-  @UseInterceptors(FileInterceptor('file'))// cùng lúc này sẽ chạy vào option đó ở multer.config.ts để tiến hành lưu trữ file
+  @UseInterceptors(FileInterceptor('fileUpload'))// cùng lúc này sẽ chạy vào option đó ở multer.config.ts để tiến hành lưu trữ file
   uploadFile(@UploadedFile(
     new ParseFilePipeBuilder()
       .addFileTypeValidator({

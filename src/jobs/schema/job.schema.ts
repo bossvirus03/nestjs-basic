@@ -14,6 +14,7 @@ export class Job {
     company: {
         _id: string;
         name: string;
+        logo: string
     };
     @Prop()
     location: string;
