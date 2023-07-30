@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } f
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { TestGuard } from './test.guard';
 import { Public, ResponseMessage } from 'src/decorator/customize';
 import { IUser } from './users.interface';
 import { User } from 'src/decorator/customize';
