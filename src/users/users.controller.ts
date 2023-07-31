@@ -43,9 +43,7 @@ export class UsersController {
 
   @ResponseMessage("delete a User")
   @Delete(':id')
-  remove(@Param('id') id: string, @User() user: IUser) {
-    return this.usersService.findOne(id)
-      .then(() => this.usersService.remove(id, user))
-      .catch(() => "user not found")
+  async remove(@Param('id') id: string, @User() user: IUser) {
+    return await this.usersService.remove(id, user)
   }
 }

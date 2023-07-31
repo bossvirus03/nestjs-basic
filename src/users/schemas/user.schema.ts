@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import { Rule } from 'src/rules/schema/rule.schema';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({
@@ -33,8 +34,8 @@ export class User {
     name: string
   };
 
-  @Prop()
-  rule: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Rule.name })
+  rule: mongoose.Schema.Types.ObjectId;;
 
   @Prop()
   refreshToken: string;

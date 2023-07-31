@@ -2,8 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ResumesService } from './resumes.service';
 import { CreateResumeDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
-import { User } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
+import mongoose from 'mongoose';
 
 @Controller('resumes')
 export class ResumesController {
@@ -28,10 +29,14 @@ export class ResumesController {
   findOne(@Param('id') id: string) {
     return this.resumesService.findOne(id);
   }
-
+  @Get('/user/:userId')
+  findByUser(@Param('userId') id: string) {
+    return this.resumesService.findByUser(id)
+  }
+@ResponseMessage("update status resume")
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResumeDto: UpdateResumeDto) {
-    return this.resumesService.update(id, updateResumeDto);
+  update(@Param('id') id: string, @Body("status") status: string, @User() user: IUser) {
+    return this.resumesService.update(id, status, user);
   }
 
   @Delete(':id')

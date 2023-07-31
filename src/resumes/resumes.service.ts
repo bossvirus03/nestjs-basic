@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateResumeDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
 import { Resume, ResumeDocument } from './schema/resume.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model, Mongoose } from 'mongoose';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
@@ -13,12 +13,13 @@ export class ResumesService {
   constructor(@InjectModel(Resume.name) private resumeModel: SoftDeleteModel<ResumeDocument>) { }
 
   async create(createResumeDto: CreateResumeDto, user: IUser): Promise<Resume> {
+    const {status} = createResumeDto;
     const resume = await this.resumeModel.create({
       ...createResumeDto,
       status: "Pending",
       email: user.email,
       history: {
-        status: createResumeDto.status,
+        status,
         updatedAt: new Date,
         updatedBy: {
           _id: user._id,
@@ -47,8 +48,10 @@ export class ResumesService {
       .limit(defaultLimit)
       // @ts-ignore: Unreachable code error
       .sort(sort)
-      .select("-password")
+      .select(projection as any)
       .populate(population)
+       //dùng để ref data truyền populate lên để lấy toàn bộ dữ liệu của model truyên vào ở @Prop
+       //dùng fields chọn ra các dữ liệu trong model caanf lấy
       .exec();
     return {
       meta: {
@@ -62,15 +65,49 @@ export class ResumesService {
   }
 
   findOne(id: string) {
-    return this.resumeModel.findOne({_id: id});
+    return this.resumeModel.findOne({ _id: id });
+  }
+  async findByUser(id: string) {
+    return await this.resumeModel.findOne({ userId: id }).sort("-createdAt")
+    .populate([
+    {
+    path: "companyId",
+    select: { name: 1 }
+    },
+    {
+    path: "jobId",
+    select: { name: 1 }
+    }
+    ])
+    
   }
 
-  update(id: string, updateResumeDto: UpdateResumeDto) {
-    return this.resumeModel.updateOne({_id: id},{...updateResumeDto});
+  async update(_id:string, status: string, user: IUser) {
+    if(!mongoose.Types.ObjectId.isValid(_id)){
+      throw new BadRequestException("id user not found");
+    }
+    const updated = await this.resumeModel.updateOne({_id}, {
+      status,
+      updatedBy: {
+        _id: user._id,
+        email: user.email
+      },
+      $push: {
+        history: {
+          status: status,
+          updatedAt: new Date,
+          updatedBy: {
+            _id: user._id,
+            email: user.email
+          }
+        }
+      }
+    });
+    return updated;
   }
 
   async remove(id: string, user: IUser) {
-    await this.resumeModel.updateOne({_id: id},{deletedBy: {_id: user._id,email: user.email}});
-    return await this.resumeModel.softDelete({_id: id});
+    await this.resumeModel.updateOne({ _id: id }, { deletedBy: { _id: user._id, email: user.email } });
+    return await this.resumeModel.softDelete({ _id: id });
   }
 }

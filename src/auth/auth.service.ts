@@ -20,6 +20,7 @@ export class AuthService {
         if (user) {
             const isValid = this.usersService.checkUserPassword(pass, user.password)
             if (isValid === true) {
+             //   console.log(user)
                 return user;
             }
         }
@@ -53,7 +54,6 @@ export class AuthService {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-
             }
         };
     }
@@ -83,14 +83,15 @@ export class AuthService {
             
             const user = await this.usersService.findUserByToken(refreshToken)//tìm trong database xem có refresh token đã lưu ở phiên login
             if (user) {//nếu có thì cập nhật lại token
-                const { _id, email, name, role, } = user;
+                const { _id, email, name, role, age} = user;
                 const payload = {
                     sub: "token refresh",
                     iss: "from server",
                     _id,
                     name,
                     email,
-                    role
+                    role,
+                    age
 
                 };
                 const refresh_token = this.getRefreshToken(payload);
@@ -111,7 +112,7 @@ export class AuthService {
                         _id: user._id,
                         name: user.name,
                         email: user.email,
-                        role: user.role,
+                        age: user.age,
                     }
                 };
             }

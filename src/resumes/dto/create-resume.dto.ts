@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 export class CreateResumeDto {
     email: string;
-    userId: mongoose.Schema.Types.ObjectId;
+    userId: string;
     @IsNotEmpty({
         message: "url không được để trống"
     })
@@ -21,24 +21,24 @@ export class CreateResumeDto {
         status: string;
         updatedAt: Date;
         updatedBy: {
-            _id: mongoose.Schema.Types.ObjectId;
+            _id: string;
             email: string;
         }
-    }
+    }[];
     isDeleted: boolean;
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;
     createdBy: {
-        _id: mongoose.Schema.Types.ObjectId;
+        _id: string;
         email: string;
     }
     updatedBy: {
-        _id: mongoose.Schema.Types.ObjectId;
+        _id: string;
         email: string;
     }
     deletedBy: {
-        _id: mongoose.Schema.Types.ObjectId;
+        _id: string;
         email: string;
     }
 }

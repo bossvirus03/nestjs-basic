@@ -9,11 +9,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {//extends kế th
     super();
   }
 
-  async validate(username: string, password: string): Promise<any> {//vì ở đây đang dùng passportlocal nên chỉ có 2 tham số truyền vào là username và password
+  async validate(username: string, password: string) {//vì ở đây đang dùng passportlocal nên chỉ có 2 tham số truyền vào là username và password
     const user = await this.authService.validateUser(username, password);
     if (!user) {
       throw new UnauthorizedException("username/password is invalid");
     }
+    //console.log("check : " ,user)
     return user;
   }
 }

@@ -1,5 +1,5 @@
 //data transfer object
-import { IsDefined, IsEmail, IsNotEmpty, IsNotEmptyObject, IsObject, ValidateNested, isNotEmpty } from 'class-validator';//validator email, password, .. from class-validation
+import { IsDefined, IsEmail, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsObject, ValidateNested, isNotEmpty } from 'class-validator';//validator email, password, .. from class-validation
 import { Type } from 'class-transformer';
 import mongoose from 'mongoose';
 import { Company } from 'src/companies/schemas/company.schema';
@@ -42,8 +42,9 @@ export class RegisterUserDto {
         message: "age không được để trống"
     })
     age: number;
-
-    rule: string;
+    @IsNotEmpty({message: "rule không được để trống"})
+    @IsMongoId({message: "rule phải có định dạng là mongoId"})
+    rule: mongoose.Schema.Types.ObjectId;
 }
 
 export class CreateUserDto {

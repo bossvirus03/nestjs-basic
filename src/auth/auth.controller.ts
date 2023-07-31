@@ -18,6 +18,7 @@ export class AuthController {
   @ResponseMessage("")
   @Post('login')
   async handleLogin(@Req() req, @Res({ passthrough: true }) response: Response) {
+    //console.log(req)
     return this.authService.login(req.user,response);
   }
   

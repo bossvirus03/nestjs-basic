@@ -9,6 +9,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
 import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +19,8 @@ export class UsersService {
     const hash = hashSync(password, salt);
     return hash
   }
-  constructor(@InjectModel(UserM.name) private userModel: SoftDeleteModel<UserDocument>) { } //connect to mongoschema
+  constructor(@InjectModel(UserM.name) private userModel: SoftDeleteModel<UserDocument>,
+  private configService: ConfigService) { } //connect to mongoschema
   async create(createUserDto: CreateUserDto, @User() User: IUser) {
     const hashPassword = this.getHardPassword(createUserDto.password);
     //check email 
@@ -80,11 +82,10 @@ export class UsersService {
   }
 
   findOne(id: string) {
-    return this.userModel.findOne({ _id: id }).select("-password")
-
+    return this.userModel.findOne({ _id: id }).select("-password").populate({path: "rule", select: { _id: 1, name: 1}})
   }
   findOneByEmail(email: string) {
-    return this.userModel.findOne({ email: email })
+    return this.userModel.findOne({ email: email }).populate({path: "rule", select: { _id: 1, name: 1}})
   }
   checkUserPassword(password: string, hash: string) {
     return compareSync(password, hash)
@@ -108,6 +109,11 @@ export class UsersService {
   }
 
   async remove(id: string, user: IUser) {
+    const mailAdmin = this.configService.get<string>("MAIL_ADMIN")
+    const mailUser = await this.userModel.findOne({ _id: id })
+    if(mailAdmin == mailUser.email) {
+      throw new BadRequestException("ban ko co quyen nay")
+    }
     await this.userModel.updateOne({ _id: id }, {
       deletedBy: {
         _id: user._id,
