@@ -42,9 +42,9 @@ export class RegisterUserDto {
         message: "age không được để trống"
     })
     age: number;
-    @IsNotEmpty({message: "rule không được để trống"})
-    @IsMongoId({message: "rule phải có định dạng là mongoId"})
-    rule: mongoose.Schema.Types.ObjectId;
+    @IsNotEmpty({message: "role không được để trống"})
+    @IsMongoId({message: "role phải có định dạng là mongoId"})
+    role: mongoose.Schema.Types.ObjectId;
 }
 
 export class CreateUserDto {
@@ -71,9 +71,9 @@ export class CreateUserDto {
     address: string;
 
     // @IsNotEmpty({
-    //     message: "rule không được để trống"
+    //     message: "role không được để trống"
     // })
-    rule: string;
+    role: string;
 
     @IsNotEmpty({
         message: "gender không được để trống"

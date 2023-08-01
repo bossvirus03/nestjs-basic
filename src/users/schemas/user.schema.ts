@@ -1,20 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Rule } from 'src/rules/schema/rule.schema';
+import { Role } from 'src/roles/schema/role.schema';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({
   timestamps: true
 })
 export class User {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Role.name })
+  role: mongoose.Schema.Types.ObjectId;
+
   @Prop()
   name: string;
 
   @Prop()
   email: string;
-
-  @Prop()
-  role: string;
 
   @Prop()
   password: string;
@@ -34,8 +34,7 @@ export class User {
     name: string
   };
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Rule.name })
-  rule: mongoose.Schema.Types.ObjectId;;
+  
 
   @Prop()
   refreshToken: string;

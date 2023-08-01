@@ -94,20 +94,20 @@ export class AuthService {
                     age
 
                 };
-                const refresh_token = this.getRefreshToken(payload);
+                const refresh_token = this.getRefreshToken(payload);//tạo ra 1 token mới (tồn tại trong thời gian ngắn)
 
                 //khi đã đăng nhập, lúc gọi đến rout này sẽ cập nhập thêm trường refresh token vào data base
                 await this.usersService.updateUserToken(refresh_token, _id.toString())
 
                 //set refresh token as cookie(đặt refresh token vào cookie)
                 response.clearCookie('refresh_token');//clear cookie cũ
-                response.cookie('refresh_token', refresh_token,
+                response.cookie('refresh_token', refresh_token,//thêm cookie mới
                     {
                         httpOnly: true,
-                        maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRES'))//account còn đăng nhập là do cookie 
+                        maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRES'))//
                     })
                 return {
-                    access_token: this.jwtService.sign(payload),//tạo ra 1 token mới (tồn tại trong thời gian ngắn)
+                    access_token: this.jwtService.sign(payload),
                     user: {
                         _id: user._id,
                         name: user.name,

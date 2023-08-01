@@ -48,7 +48,7 @@ export class UsersService {
     const user = await this.userModel.create({
       ...registerUserDto,
       password: hashPassword,
-      rule: "USER"
+      role: "USER"
     })
     return user;
   }
@@ -82,10 +82,10 @@ export class UsersService {
   }
 
   findOne(id: string) {
-    return this.userModel.findOne({ _id: id }).select("-password").populate({path: "rule", select: { _id: 1, name: 1}})
+    return this.userModel.findOne({ _id: id }).select("-password").populate({path: "role", select: { _id: 1, name: 1}})
   }
   findOneByEmail(email: string) {
-    return this.userModel.findOne({ email: email }).populate({path: "rule", select: { _id: 1, name: 1}})
+    return this.userModel.findOne({ email: email }).populate({path: "role", select: { _id: 1, name: 1}})
   }
   checkUserPassword(password: string, hash: string) {
     return compareSync(password, hash)

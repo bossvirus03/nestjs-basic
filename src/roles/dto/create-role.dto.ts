@@ -1,7 +1,7 @@
 import { IsArray, IsBoolean, IsMongoId, IsNotEmpty } from "class-validator"
 import mongoose from "mongoose";
 
-export class CreateRuleDto {
+export class CreateRoleDto {
     @IsNotEmpty({
         message: "name không được để trống"
     })
