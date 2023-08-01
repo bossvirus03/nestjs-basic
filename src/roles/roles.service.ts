@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import { ConfigService } from '@nestjs/config';
+import { ADMIN_ROLE } from 'src/databases/sample';
 
 @Injectable()
 export class RolesService {
@@ -72,7 +73,7 @@ export class RolesService {
 
   async remove(id: string, user: IUser) {
     const RoleUser = await this.RoleModel.findOne({_id: id});
-    if(RoleUser.name === "ADMIN") {
+    if(RoleUser.name === ADMIN_ROLE) {
       throw new BadRequestException("ban ko the xoa role admin")
     }
      await this.RoleModel.updateOne({_id: id}, {

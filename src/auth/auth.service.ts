@@ -6,13 +6,15 @@ import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { Response } from 'express';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private usersService: UsersService,
         private jwtService: JwtService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private rolesService: RolesService
     ) { }
     //username, pass là 2 tham số thư viện passport nó trả về
     async validateUser(username: string, pass: string): Promise<any> {
@@ -20,21 +22,29 @@ export class AuthService {
         if (user) {
             const isValid = this.usersService.checkUserPassword(pass, user.password)
             if (isValid === true) {
+                const userRole = user.role as unknown as { _id: string
+                name: string}
+                const temp = await this.rolesService.findOne(userRole._id)
+                const objUser = {
+                    ...user.toObject(),
+                    permissions: temp?.permissions??[]
+                }
              //   console.log(user)
-                return user;
+                return objUser;
             }
         }
         return null;
     }
     async login(user: IUser, response: Response) {
-        const { _id, email, name, role, } = user;
+        const { _id, email, name, role, permissions } = user;
         const payload = {
             sub: "token login",
             iss: "from server",
             _id,
             name,
             email,
-            role
+            role,
+            permissions
         };
         const refresh_token = this.getRefreshToken(payload);//create refresh token
 
@@ -50,10 +60,11 @@ export class AuthService {
         return {
             access_token: this.jwtService.sign(payload),
             user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
+                _id,
+                name,
+                email,
+                role,
+                permissions
             }
         };
     }
@@ -83,7 +94,7 @@ export class AuthService {
             
             const user = await this.usersService.findUserByToken(refreshToken)//tìm trong database xem có refresh token đã lưu ở phiên login
             if (user) {//nếu có thì cập nhật lại token
-                const { _id, email, name, role, age} = user;
+                const { _id, email, name, role} = user;
                 const payload = {
                     sub: "token refresh",
                     iss: "from server",
@@ -91,13 +102,16 @@ export class AuthService {
                     name,
                     email,
                     role,
-                    age
 
                 };
                 const refresh_token = this.getRefreshToken(payload);//tạo ra 1 token mới (tồn tại trong thời gian ngắn)
 
                 //khi đã đăng nhập, lúc gọi đến rout này sẽ cập nhập thêm trường refresh token vào data base
                 await this.usersService.updateUserToken(refresh_token, _id.toString())
+
+                const userRole = user.role as unknown as { _id: string
+                    name: string}
+                    const temp = await this.rolesService.findOne(userRole._id)
 
                 //set refresh token as cookie(đặt refresh token vào cookie)
                 response.clearCookie('refresh_token');//clear cookie cũ
@@ -109,10 +123,11 @@ export class AuthService {
                 return {
                     access_token: this.jwtService.sign(payload),
                     user: {
-                        _id: user._id,
-                        name: user.name,
-                        email: user.email,
-                        age: user.age,
+                        _id,
+                        name,
+                        email,
+                        role,
+                        permissions: temp.permissions??[],
                     }
                 };
             }

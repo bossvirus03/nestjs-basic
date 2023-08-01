@@ -5,6 +5,14 @@ export interface IUser {
     _id: mongoose.Schema.Types.ObjectId
     name: string
     email: string
-    age: number
-    role: mongoose.Schema.Types.ObjectId
+    role: {
+        _id: string
+        name: string
+    }
+    permissions:{
+        _id: string
+        name: string
+        apiPath: string
+        module: string
+    }[]
     }
