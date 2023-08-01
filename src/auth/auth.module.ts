@@ -18,7 +18,7 @@ import { UsersService } from 'src/users/users.service';
         secretOrPrivateKey: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
         signOptions: {
             expiresIn: ms(configService.get<string>('JWT_ACCESS_EXPIRES'))/1000,
-        },
+        }
       }),
       inject: [ConfigService],
     }),],
