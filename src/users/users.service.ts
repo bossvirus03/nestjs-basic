@@ -64,7 +64,6 @@ export class UsersService {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-    console.log(filter)
     const skip = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;//nếu không truyền vào limit thì sẽ để mặc định là 10
     const totalItems = (await this.userModel.find(filter)).length;//tổng số bản ghi

@@ -23,13 +23,13 @@ export class AuthService {
             const isValid = this.usersService.checkUserPassword(pass, user.password)
             if (isValid === true) {
                 const userRole = user.role as unknown as { _id: string
-                name: string}
+                name: string
+            }
                 const temp = await this.rolesService.findOne(userRole._id)
                 const objUser = {
                     ...user.toObject(),
                     permissions: temp?.permissions??[]
                 }
-             //   console.log(user)
                 return objUser;
             }
         }
