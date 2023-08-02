@@ -13,6 +13,7 @@ export class ResumesController {
   async create(@Body() createResumeDto: CreateResumeDto, @User() user: IUser) {
     const newResume = await this.resumesService.create(createResumeDto, user);
     return {
+      _id: newResume?._id,
       createdAt: newResume?.createdAt,
     }
   }

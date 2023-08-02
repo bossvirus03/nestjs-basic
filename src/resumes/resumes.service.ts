@@ -12,11 +12,11 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 export class ResumesService {
   constructor(@InjectModel(Resume.name) private resumeModel: SoftDeleteModel<ResumeDocument>) { }
 
-  async create(createResumeDto: CreateResumeDto, user: IUser): Promise<Resume> {
+  async create(createResumeDto: CreateResumeDto, user: IUser) {
     const {status} = createResumeDto;
     const resume = await this.resumeModel.create({
       ...createResumeDto,
-      status: "Pending",
+      status: "PENDING",
       email: user.email,
       history: {
         status,
