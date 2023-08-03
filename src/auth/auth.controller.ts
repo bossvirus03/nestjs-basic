@@ -8,17 +8,20 @@ import { Response, Request } from 'express'
 import { IUser } from 'src/users/users.interface';
 import { User } from '../decorator/customize'
 import { RolesService } from 'src/roles/roles.service';
+import { ThrottlerGuard, Throttle} from '@nestjs/throttler'
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,//
     private roleService: RolesService
   ) { }
-  @UseGuards(JwtAuthGuard)
-  //bảo về người dùng : đăng nhập thì mới có thể truy cập vào route này
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtAuthGuard) //bảo về người dùng : đăng nhập thì mới có thể truy cập vào route này
+  @UseGuards(ThrottlerGuard)
+ 
   @Public()
-  @ResponseMessage("")
+  @ResponseMessage("") 
+  @UseGuards(LocalAuthGuard)// Rate Limiting
+  @Throttle(5, 60) //override rate limit
   @Post('login')
   async handleLogin(@Req() req, @Res({ passthrough: true }) response: Response) {
     //console.log(req)
