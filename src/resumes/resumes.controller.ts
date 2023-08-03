@@ -20,21 +20,22 @@ export class ResumesController {
 
   @Get()
   findAll(
+    @User() user: IUser,
     @Query("pageSize") limit: number,
     @Query("current") currentPage: number,
     @Query() qs: string) {
-    return this.resumesService.findAll(limit, currentPage,qs);
+    return this.resumesService.findAll(limit, currentPage, qs, user);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.resumesService.findOne(id);
   }
-  @Get('/user/:userId')
+  @Get('/by-user/:userId')
   findByUser(@Param('userId') id: string) {
     return this.resumesService.findByUser(id)
   }
-@ResponseMessage("update status resume")
+  @ResponseMessage("update status resume")
   @Patch(':id')
   update(@Param('id') id: string, @Body("status") status: string, @User() user: IUser) {
     return this.resumesService.update(id, status, user);

@@ -45,7 +45,7 @@ export class UsersService {
     return user;
   }
   async register(registerUserDto: RegisterUserDto) {
-    const userRole = await this.roleModel.findOne({name: USER_ROLE});
+    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
     const hashPassword = this.getHardPassword(registerUserDto.password);
     //check email 
     const isEmail = await this.userModel.findOne({ email: registerUserDto.email })
@@ -105,8 +105,8 @@ export class UsersService {
     let updateUser = await this.userModel.updateOne(
       { _id: updateUserDto._id },
       {
-        ...updateUserDto, updatedBy:
-        {
+        ...updateUserDto,
+        updatedBy: {
           _id: user._id,
           email: user.email
         }
@@ -132,6 +132,6 @@ export class UsersService {
     return await this.userModel.updateOne({ _id }, { refreshToken })
   }
   findUserByToken = async (refreshToken: string) => {
-    return (await this.userModel.findOne({ refreshToken })).populate({path: "role", select : {name: 1} })
+    return (await this.userModel.findOne({ refreshToken })).populate({ path: "role", select: { name: 1 } })
   }
 }

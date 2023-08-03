@@ -7,10 +7,16 @@ import mongoose, { Model, Mongoose } from 'mongoose';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { User, UserDocument } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class ResumesService {
-  constructor(@InjectModel(Resume.name) private resumeModel: SoftDeleteModel<ResumeDocument>) { }
+  constructor(
+    @InjectModel(Resume.name) 
+    private resumeModel: SoftDeleteModel<ResumeDocument>,
+    @InjectModel(User.name) 
+    private userModel: SoftDeleteModel<UserDocument>,
+    ) { }
 
   async create(createResumeDto: CreateResumeDto, user: IUser) {
     const {status} = createResumeDto;
@@ -34,7 +40,8 @@ export class ResumesService {
     return resume;
   }
 
-  async findAll(limit: number, currentPage: number, qs: string) {
+  async findAll(limit: number, currentPage: number, qs: string, user: IUser) {
+    const IduserCompany = (await this.userModel.findOne({_id: user._id}))?.company?._id;
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
@@ -43,6 +50,27 @@ export class ResumesService {
     let defaultLimit = +limit ? +limit : 10;//nếu không truyền vào limit thì sẽ để mặc định là 10
     const totalItems = (await this.resumeModel.find(filter)).length;//tổng số bản ghi
     const totalPages = Math.ceil(totalItems / defaultLimit);
+    if(IduserCompany){
+      const result = await this.resumeModel.find({companyId: IduserCompany})
+      .skip(skip)
+      .limit(defaultLimit)
+      // @ts-ignore: Unreachable code error
+      .sort(sort)
+      .select(projection as any)
+      .populate(population)
+       //dùng để ref data truyền populate lên để lấy toàn bộ dữ liệu của model truyên vào ở @Prop
+       //dùng fields chọn ra các dữ liệu trong model caanf lấy
+      .exec();
+    return {
+      meta: {
+        current: currentPage, //trang hiện tại
+        pageSize: limit, //số lượng bản ghi đã lấy
+        pages: totalPages, //tổng số trang với điều kiện query
+        total: totalItems // tổng số phần tử (số bản ghi)
+      },
+      result //kết quả query
+    }
+    }
     const result = await this.resumeModel.find(filter)
       .skip(skip)
       .limit(defaultLimit)

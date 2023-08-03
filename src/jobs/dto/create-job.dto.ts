@@ -54,9 +54,6 @@ export class CreateJobDto {
     })
     endDate: string;
 
-    @IsNotEmpty({
-        message: "sActive không được để trống"
-    }) 
     sActive: boolean;
 
     // @IsNotEmpty({
