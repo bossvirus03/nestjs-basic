@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Subscriber, SubscriberDocument } from 'src/subscribers/schema/subscriber.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Job, JobDocument } from 'src/jobs/schema/job.schema';
+import { Cron } from '@nestjs/schedule';
 @Controller('mail')
 export class MailController {
   constructor(
@@ -19,6 +20,7 @@ export class MailController {
   @Get()
   @Public()
   @ResponseMessage("Test email")
+  @Cron('0 0 0 * * 0')//auto send email every 0:0':00" sunday
   async handleTestEmail() {
   const subscribers = await this.subscriberModel.find({})
   for(const subs of subscribers) {
