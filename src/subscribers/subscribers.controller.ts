@@ -2,14 +2,22 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { SubscribersService } from './subscribers.service';
 import { CreateSubscriberDto } from './dto/create-subscriber.dto';
 import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
+import { IUser } from 'src/users/users.interface';
+import { Public, PublicPermission, User } from 'src/decorator/customize';
 
 @Controller('subscribers')
 export class SubscribersController {
   constructor(private readonly subscribersService: SubscribersService) {}
 
   @Post()
+  @PublicPermission()
   create(@Body() createSubscriberDto: CreateSubscriberDto) {
     return this.subscribersService.create(createSubscriberDto);
+  }
+  @PublicPermission()
+  @Post()
+  getSkills(@User() user : IUser) {
+    return this.subscribersService.getSkills(user);
   }
 
   @Get()
@@ -24,10 +32,10 @@ export class SubscribersController {
   findOne(@Param('id') id: string) {
     return this.subscribersService.findOne(id);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubscriberDto: UpdateSubscriberDto) {
-    return this.subscribersService.update(id, updateSubscriberDto);
+  @PublicPermission()
+  @Patch()
+  update(@Body() updateSubscriberDto: UpdateSubscriberDto, @User() user: IUser) {
+    return this.subscribersService.update(updateSubscriberDto, user);
   }
 
   @Delete(':id')

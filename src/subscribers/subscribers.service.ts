@@ -6,12 +6,13 @@ import { Model } from 'mongoose';
 import { Subscriber, SubscriberDocument } from './schema/subscriber.schema';
 import aqp from 'api-query-params';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { IUser } from 'src/users/users.interface';
 
 @Injectable()
 export class SubscribersService {
-  constructor(@InjectModel(Subscriber.name) private subscriberModel: SoftDeleteModel<SubscriberDocument>) {}
- async create(createSubscriberDto: CreateSubscriberDto) {
-    return await this.subscriberModel.create({...createSubscriberDto});
+  constructor(@InjectModel(Subscriber.name) private subscriberModel: SoftDeleteModel<SubscriberDocument>) { }
+  async create(createSubscriberDto: CreateSubscriberDto) {
+    return await this.subscriberModel.create({ ...createSubscriberDto });
   }
 
   async findAll(limit: number, currentPage: number, qs: string) {
@@ -37,17 +38,20 @@ export class SubscribersService {
         total: totalItems // tổng số phần tử (số bản ghi)
       },
       result //kết quả query
-    }  }
-
+    }
+  }
+ async getSkills(user: IUser){
+  return await this.subscriberModel.find({email: user.email})
+ }
   async findOne(id: string) {
-    return await this.subscriberModel.findOne({_id: id});
+    return await this.subscriberModel.findOne({ _id: id });
   }
 
-  async update(id: string, updateSubscriberDto: UpdateSubscriberDto) {
-    return await this.subscriberModel.updateOne({_id: id }, {...updateSubscriberDto})
+  async update(updateSubscriberDto: UpdateSubscriberDto, user: IUser) {
+    return await this.subscriberModel.updateOne({ email: user.email }, { ...updateSubscriberDto }, {upsert: true});
   }
 
   async remove(id: string) {
-    return await this.subscriberModel.softDelete({_id: id});
+    return await this.subscriberModel.softDelete({ _id: id });
   }
 }

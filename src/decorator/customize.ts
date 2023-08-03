@@ -3,9 +3,10 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 //
 export const IS_PUBLIC_KEY = 'isPublic';
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);//tạo ra decorator @Public()
 
-//tạo ra decorator @Public()
-export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
+export const IS_PUBLIC_PREMISSION = 'isPublicPermission';
+export const PublicPermission = () => SetMetadata(IS_PUBLIC_PREMISSION, true);//tạo ra decorator @Public()
 
 ///tạo ra decorator @ResponseMessage()
 export const RESPONSE_MESSAGE = 'response_message';
